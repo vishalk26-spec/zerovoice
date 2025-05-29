@@ -4,9 +4,12 @@ import { ZERODHA_CONFIG } from '../config/zerodha';
 
 export default function LoginButton() {
     const handleLogin = () => {
-        const loginUrl = `${ZERODHA_CONFIG.KITE_LOGIN_URL}?api_key=${ZERODHA_CONFIG.API_KEY}&v=3`;
+        const loginUrl = new URL(ZERODHA_CONFIG.KITE_LOGIN_URL);
+        loginUrl.searchParams.append('api_key', ZERODHA_CONFIG.API_KEY);
+        loginUrl.searchParams.append('v', ZERODHA_CONFIG.KITE_VERSION);
+        loginUrl.searchParams.append('redirect_uri', ZERODHA_CONFIG.REDIRECT_URI);
         
-        window.location.href = loginUrl;
+        window.location.href = loginUrl.toString();
     };
 
     return (

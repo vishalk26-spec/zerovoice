@@ -2,58 +2,48 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getRequestToken, clearAuthTokens } from '../utils/auth';
 
-export default function WelcomePage() {
+export default function Welcome() {
     const router = useRouter();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [requestToken, setRequestToken] = useState<string | null>(null);
 
     useEffect(() => {
-
-        const requestToken = localStorage.getItem('zerodha_request_token');
-
-        // agar nahi h request token 
-        if (!requestToken) {
+        const token = getRequestToken();
+        if (!token) {
             router.push('/');
             return;
         }
-        setIsAuthenticated(true);
+        setRequestToken(token);
     }, [router]);
 
     const handleLogout = () => {
-        // Clear the authentication token
-        localStorage.removeItem('zerodha_request_token');
-        // Redirect to home page
+        clearAuthTokens();
         router.push('/');
     };
 
-    if (!isAuthenticated) {
+    if (!requestToken) {
         return null;
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
-                <div className="text-center">
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                        Welcome to ZeroVoice!
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        You have successfully authenticated with Zerodha.
-                    </p>
-                </div>
-                <div className="mt-8 space-y-6">
-                    <div className="rounded-md shadow-sm space-y-4">
-                        <p className="text-sm text-gray-500">
-                            You can now start using the application with your Zerodha account.
-                        </p>
-                    </div>
-                    <div className="flex justify-center">
-                        <button
-                            onClick={handleLogout}
-                            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
-                        >
-                            Logout
-                        </button>
+        <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+            <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+                <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+                    <div className="max-w-md mx-auto">
+                        <div className="divide-y divide-gray-200">
+                            <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                                <h1 className="text-2xl font-bold mb-4">Welcome to ZeroVoice</h1>
+                                <p>You are successfully authenticated with Zerodha!</p>
+                               
+                                <button
+                                    onClick={handleLogout}
+                                    className="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
